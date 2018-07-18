@@ -1,0 +1,15 @@
+body{
+	background: #fff;
+	width: 100%
+}
+ul.err-area li{ color:red }
+.data-table { 
+	display: inline-block
+}
+.data-table table {
+	border-collapse: collapse;
+	border: 1px solid #ddd;
+}
+.page-data {
+	display: inline-block;
+}

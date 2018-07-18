@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <p>当前剩余个数：<span class="count" data-val="<%= amount%>"><%= amount%></span></p>
+  <button onclick="update()"> click me </button>
+</body>
+</html>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript" src="/javascripts/socket.io.js"></script>
+<script>
+  var socket = io("ws://192.168.0.82:5000");
+  socket.on('connect', function(){
+      console.log('connect a socket client');
+  });
+  socket.on('postAmount', val => {
+    const $count = document.querySelector('.count');
+    $count.setAttribute('data-val', val);
+    $count.innerHTML = val;
+  })
+  function update () {
+
+    const $count = document.querySelector('.count');
+    const amount = $count.getAttribute('data-val');
+    axios.post('/api/check', { amount }).then((res) => {
+      const data = res.data;
+      
+      $count.setAttribute('data-val', data.amount);
+      $count.innerHTML = data.amount;
+      socket.emit('updateAmount', data.amount)
+    })
+  }
+</script>

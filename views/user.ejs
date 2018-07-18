@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%=title%></title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+  </head>
+<body>
+<div class="data-table" style="width: 100%; margin-bottom: 20px; padding: 0 50px; box-sizing: border-box">
+  <p style="width: 100%; margin: 20px auto; text-align: center" onclick="add()">Add</p>
+  <table border="1" cellpadding="7" cellspacing="7" width="100%">
+    <tr>
+      <th width="50px">No</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Password</th>
+      <th>Action</th>
+    </tr>
+                    
+    <% if(data.length){ 
+                    
+      for(var i = 0;i < data.length;i++) { %>
+      
+    <tr>
+      <td><%=(i+1)%></td>
+      <td><%=data[i].name%></td>
+      <td><%=data[i].email%></td>
+      <td><%=data[i].password%></td>
+      <td>
+        <a class="a-inside edit" href="/user/<%=data[i].user_id%>">Edit</a>
+        <a class="a-inside delete" href="javascript:void(0)" onClick="deleteUser(<%=data[i].user_id%>)">Delete</a>
+      </td>
+    </tr>
+  <% }
+    }else{ %>
+      <tr>
+        <td colspan="5">No Data</td>
+      </tr>
+  <% } %>                              
+  </table>
+  </div>
+  
+  <div class="page-data" style="display: none;">
+    <form method="post" action="" id="the-form">
+      <table cellpadding="11">
+        <tr>
+          <td class="label">Name</td><td>: <input type="text" class="name" name="name"></td>
+        </tr>
+        <tr>
+          <td class="label">Email</td><td>: <input type="text" class="email" name="email"></td>
+        </tr>
+        <tr>
+          <td class="label">Password</td><td>: <input type="password" class="password" name="password"></td>
+        </tr>
+        <tr>
+          <td class="label"></td>
+          <td>
+            &nbsp; <input type="button" value="Save" onClick="saveUser()">
+          </td>
+        </tr>
+      </table>
+    </form>
+</div>
+</body>
+</html>
+<script>
+  function deleteUser(user_id){
+    axios.delete("/api/user/delete", { data: { user_id } }).then(res => { console.log('...delete....')
+      window.location.reload();
+    })
+  }
+  function add () {
+    document.querySelector('.page-data').style.display = 'block';
+  }
+  function saveUser () {
+    const name = document.querySelector('.name').value;
+    const email = document.querySelector('.email').value;
+    const password = document.querySelector('.password').value;
+    if (!name || !email || !password) {
+      alert('请填写输入项');
+      return false;
+    }
+    const params = {
+      name,
+      email,
+      password
+    }
+    const uri = "/api/user/add";
+    axios.put(uri, params).then(res => {
+      if (res) {
+        window.location.href = '/user';
+        return false;
+      }
+    });
+  }
+</script>
